@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="brython.js"></script>
+    <script src="brython_stdlib.js"></script>
+</head>
+
+<body onload="brython()">
+
+    <label for="limit">Prime limit (default=10):</label>
+    <input id="limit" type="number" min="2">
+
+    <p id="res"></p>
+
+    <script type="text/python">
+from browser import document
+from math import isqrt
+
+def sieve(n):
+    n = int(n or 10)
+    if n < 2:
+        return "()"
+    mp = bytearray(b"\1") * (n + 1)
+    mp[0:2] = b"\0\0"
+
+    for p in range(2, isqrt(n) + 1):
+        if mp[p]:
+            for j in range(p*p, n+1, p):
+                mp[j] = 0
+    return str(tuple(i for i in range(n+1) if mp[i]))
+def load(ev):
+    document["res"].text = sieve(document["limit"].value)
+document["limit"].bind("change", load)
+document["res"].text = sieve(10)
+    </script>
+
+</body>
+</html>
